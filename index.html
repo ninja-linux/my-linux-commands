@@ -739,87 +739,90 @@
 <footer>
     <p>&copy; 2026 Ninja - Linux.com | Advanced Terminal Database System</p>
 </footer>
-[6/5/2026 12:18 AM] Ninja Pandat: <script>
-    // STANDARD TEXT SEARCH LOGIC
-    function searchCommands() {
-        var input = document.getElementById("searchBar").value.toLowerCase();
-        var cards = document.getElementsByClassName("cmd-card");
-        var headings = document.getElementsByClassName("section-title");
-        var visibleCardsCount = 0;
+ Ninja Pandat: <script>
+   // STANDARD TEXT SEARCH LOGIC
+function searchCommands() {
+    var input = document.getElementById("searchBar").value.toLowerCase();
+    var cards = document.getElementsByClassName("cmd-card");
+    var visibleCardsCount = 0;
 
-        for (var i = 0; i < cards.length; i++) {
-            var cmdName = cards[i].querySelector(".cmd-name").innerText.toLowerCase();
-            var cmdDesc = cards[i].querySelector(".cmd-desc").innerText.toLowerCase();
-            
-            if (cmdName.includes(input) || cmdDesc.includes(input)) {
-                cards[i].style.style.display = "block";
-                cards[i].style.display = "block";
-                visibleCardsCount++;
-            } else {
-                cards[i].style.display = "none";
-            }
+    for (var i = 0; i < cards.length; i++) {
+        // Tumhare card ke andar ".cmd-header" aur ".cmd-desc" classes hain
+        var cmdHeaderElement = cards[i].querySelector(".cmd-header");
+        var cmdDescElement = cards[i].querySelector(".cmd-desc");
+
+        // Agar elements milte hain toh unka text nikalna
+        var cmdName = cmdHeaderElement ? cmdHeaderElement.innerText.toLowerCase() : "";
+        var cmdDesc = cmdDescElement ? cmdDescElement.innerText.toLowerCase() : "";
+
+        if (cmdName.includes(input) || cmdDesc.includes(input)) {
+            cards[i].style.display = "block"; // Double style hata diya hai yahan se
+            visibleCardsCount++;
+        } else {
+            cards[i].style.display = "none";
         }
+    }
 
-        // Section handling
-        for (var j = 0; j < headings.length; j++) {
-            if (input.length > 0) {
-                headings[j].style.display = "none";
-            } else {
-                headings[j].style.display = "block";
-            }
-        }
-
-        var noResults = document.getElementById("noResults");
+    // No results vaala element agar tumne banaya hai toh use handle karne ke liye
+    var noResults = document.getElementById("noMatchError");
+    if (noResults) {
         if (visibleCardsCount === 0 && input.length > 0) {
             noResults.style.display = "block";
         } else {
             noResults.style.display = "none";
         }
     }
+}
 
     // FEATURE 1: VOICE MICROPHONE SEARCH SYSTEM
-    function startVoiceSearch() {
-        var micBtn = document.getElementById("micBtn");
-        var searchBar = document.getElementById("searchBar");
+   // FEATURE 1: VOICE MICROPHONE SEARCH SYSTEM
+function startVoiceSearch() {
+    var micBtn = document.getElementById("micBtn");
+    var searchBar = document.getElementById("searchBar");
+
+    var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (SpeechRecognition) {
+        var recognition = new SpeechRecognition();
         
-        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-            var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            var recognition = new SpeechRecognition();
-            
-            recognition.lang = 'hi-IN'; // Supports Hindi + English Mix
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
-            
-            recognition.onstart = function() {
-                micBtn.classList.add("listening");
-                searchBar.placeholder = "Listening active... Kuch bolein...";
-            };
-            
-            recognition.onspeechend = function() {
-                recognition.stop();
-                micBtn.classList.remove("listening");
-            };
-            
-            recognition.onresult = function(event) {
-                var voiceText = event.results[0][0].transcript.toLowerCase();
-                if(voiceText.endsWith('.')) { voiceText = voiceText.slice(0, -1); }
-                
-                searchBar.value = voiceText;
-                searchBar.placeholder = "Command dhoondhein ya kaam type karein...";
-                micBtn.classList.remove("listening");
-                searchCommands(); 
-            };
-            
-            recognition.onerror = function() {
-                micBtn.classList.remove("listening");
-                searchBar.placeholder = "Voice process failed. Type manually.";
-            };
-            
-            recognition.start();
-        } else {
-            alert("Oops! Aapka browser Speech Recognition support nahi karta. Chrome use karein.");
-        }
+        recognition.lang = 'hi-IN'; // Supports Hindi + English Mix
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.onstart = function() {
+            if (micBtn) micBtn.style.color = "#ff3333"; // Recording ke waqt mic red ho jayega
+            if (searchBar) searchBar.placeholder = "Listening active... Kuch bolein...";
+        };
+
+        recognition.onresult = function(event) {
+            let speechResult = event.results[0][0].transcript.toLowerCase();
+            if(speechResult.endsWith('.')) {
+                speechResult = speechResult.slice(0, -1);
+            }
+            if (searchBar) {
+                searchBar.value = speechResult;
+                searchCommands(); // Auto search filter run karega
+            }
+        };
+
+        recognition.onspeechend = function() {
+            recognition.stop();
+            if (micBtn) micBtn.style.color = "#00ff00"; // Wapas green ho jayega
+            if (searchBar) searchBar.placeholder = "Command dhoondhein ya kaam type karein...";
+        };
+
+        recognition.onerror = function(event) {
+            if (micBtn) micBtn.style.color = "#00ff00";
+            if (searchBar) searchBar.placeholder = "Command dhoondhein ya kaam type karein...";
+            console.log("Speech Error: " + event.error);
+        };
+
+        recognition.start();
+
+    } else {
+        alert("Aapka browser voice search support nahi karta. Google Chrome use karein!");
     }
+}
 
     // FEATURE 2: CAMERA/PHOTO MOCK-MATCHING SEARCH SYSTEM
     function triggerPhotoSearch() {
@@ -836,7 +839,7 @@
             
             // Fixed the syntax error by replacing raw space with logic code ||
             if (fileName.includes("ip")  fileName.includes("net")  fileName.includes("wifi")) {
-[6/5/2026 12:18 AM] Ninja Pandat: query = "ip check";
+ Ninja Pandat: query = "ip check";
             } else if (fileName.includes("file")  fileName.includes("create")  fileName.includes("touch")) {
                 query = "file";
             } else if (fileName.includes("folder") || fileName.includes("dir")) {
