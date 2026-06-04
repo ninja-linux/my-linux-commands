@@ -1,4 +1,4 @@
-[6/5/2026 12:18 AM] Ninja Pandat: <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -198,21 +198,21 @@
     <p>⚡ Terminal Command Center - System Fully Operational ⚡</p>
 </header>
 
-<div class="container">
+<div class="search-container">
+    <i class="fas fa-search search-icon"></i>
+    <input type="text" id="searchBar" onkeyup="searchCommands()" placeholder="Command dhoondhein ya kaam type karein (e.g., delete, ip check)...">
     
-    <div class="search-box-container">
-        <i class="fa-solid fa-magnifying-glass" style="color: #00ff66; margin-right: 5px;"></i>
-        <input type="text" id="searchBar" onkeyup="searchCommands()" placeholder="Command dhoondhein ya kaam type karein (e.g., delete, ip check)...">
-        
-        <button class="search-btn" id="micBtn" onclick="startVoiceSearch()" title="Bol kar search karein">
-            <i class="fa-solid fa-microphone"></i>
-        </button>
-        
-        <button class="search-btn" onclick="triggerPhotoSearch()" title="Photo upload karke search karein">
-            <i class="fa-solid fa-camera"></i>
-        </button>
-        <input type="file" id="imageInput" accept="image/*" onchange="processPhotoSearch(this)">
-    </div>
+    <!-- Voice Search Button -->
+    <button class="search-btn" id="micBtn" onclick="startVoiceSearch()" title="Bol kar search karein">
+        <i class="fas fa-microphone"></i>
+    </button>
+    
+    <!-- Photo Search Button -->
+    <button class="search-btn" onclick="document.getElementById('fileInput').click()" title="Photo select karke search karein">
+        <i class="fas fa-camera"></i>
+    </button>
+    <input type="file" id="fileInput" accept="image/*" onchange="processPhotoSearch(event)">
+</div>
 
     <div class="intro">
         <h3>🚨 Hacker Advanced Search Utilities Active</h3>
