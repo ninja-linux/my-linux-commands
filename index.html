@@ -1,10 +1,9 @@
-<!DOCTYPE html>
+[6/5/2026 12:18 AM] Ninja Pandat: <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LINUX.COM - Terminal Vault</title>
-    <!-- FontAwesome Fonts for Microphone and Camera Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
@@ -116,9 +115,9 @@
             font-family: 'Courier New', Courier, monospace;
             text-shadow: 0 0 5px rgba(255, 74, 90, 0.3);
         }
-[6/4/2026 9:00 PM] Ninja Pandat: .cmd-card {
+        .cmd-card {
             background-color: rgba(20, 20, 26, 0.9);
-            border: 1px solid #222230;
+[6/5/2026 12:18 AM] Ninja Pandat: border: 1px solid #222230;
             border-radius: 6px;
             padding: 15px 20px;
             margin-bottom: 15px;
@@ -201,17 +200,14 @@
 
 <div class="container">
     
-    <!-- SEARCH BOX CONTAINER WITH VOICEMIC AND PHOTO SEARCH -->
     <div class="search-box-container">
         <i class="fa-solid fa-magnifying-glass" style="color: #00ff66; margin-right: 5px;"></i>
         <input type="text" id="searchBar" onkeyup="searchCommands()" placeholder="Command dhoondhein ya kaam type karein (e.g., delete, ip check)...">
         
-        <!-- MICROPHONE BUTTON -->
         <button class="search-btn" id="micBtn" onclick="startVoiceSearch()" title="Bol kar search karein">
             <i class="fa-solid fa-microphone"></i>
         </button>
         
-        <!-- CAMERA PHOTO BUTTON -->
         <button class="search-btn" onclick="triggerPhotoSearch()" title="Photo upload karke search karein">
             <i class="fa-solid fa-camera"></i>
         </button>
@@ -225,15 +221,13 @@
 
     <div id="noResults">❌ TERMINAL ERROR: Koi matching command nahi mili! Dobara try karein.</div>
 
-    <!-- DB: 100 COMMANDS -->
     <div id="cmdList">
-        <!-- SECTION 1 -->
         <h2 class="section-title">>_ 1. File & Directory Navigation (1-15)</h2>
         <div class="cmd-card">
-[6/4/2026 9:00 PM] Ninja Pandat: <div class="cmd-name">1. pwd</div>
+            <div class="cmd-name">1. pwd</div>
             <div class="cmd-desc">Current folder (directory) ka poora path dikhati hai. Location check karne ke liye.</div>
             <div class="code-box"><span class="cmd-text">pwd</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
-        </div>
+[6/5/2026 12:18 AM] Ninja Pandat: </div>
         <div class="cmd-card">
             <div class="cmd-name">2. ls</div>
             <div class="cmd-desc">Folder ke andar maujood sabhi files aur folders ki list dekhne ke liye (view list).</div>
@@ -283,12 +277,12 @@
             <div class="cmd-name">11. cp -r</div>
             <div class="cmd-desc">Poore folder directory ko data samet copy karne ke liye.</div>
             <div class="code-box"><span class="cmd-text">cp -r myfolder/ /backup_folder/</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
-[6/4/2026 9:00 PM] Ninja Pandat: </div>
+        </div>
         <div class="cmd-card">
             <div class="cmd-name">12. mv</div>
             <div class="cmd-desc">File/folder ko move karne ya rename (naam badalne, name change) ke liye.</div>
             <div class="code-box"><span class="cmd-text">mv old.txt new_name.txt</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
-        </div>
+[6/5/2026 12:18 AM] Ninja Pandat: </div>
         <div class="cmd-card">
             <div class="cmd-name">13. rm</div>
             <div class="cmd-desc">Kisi file ko hamesha ke liye delete karne ya hatane ke liye (remove file).</div>
@@ -305,7 +299,6 @@
             <div class="code-box"><span class="cmd-text">clear</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
         </div>
 
-        <!-- SECTION 2 -->
         <h2 class="section-title">>_ 2. File Viewing & Text Editing (16-30)</h2>
         <div class="cmd-card">
             <div class="cmd-name">16. cat</div>
@@ -339,12 +332,12 @@
         </div>
         <div class="cmd-card">
             <div class="cmd-name">22. less</div>
-[6/4/2026 9:00 PM] Ninja Pandat: <div class="cmd-desc">Badi text files ko page-by-page aaram se read scroll karke padhne ke liye.</div>
+            <div class="cmd-desc">Badi text files ko page-by-page aaram se read scroll karke padhne ke liye.</div>
             <div class="code-box"><span class="cmd-text">less huge_database.sql</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
         </div>
         <div class="cmd-card">
             <div class="cmd-name">23. grep</div>
-            <div class="cmd-desc">Kisi file ke andar se koi khaas shabd (text/keyword find) search dhoondhne ke liye.</div>
+[6/5/2026 12:18 AM] Ninja Pandat: <div class="cmd-desc">Kisi file ke andar se koi khaas shabd (text/keyword find) search dhoondhne ke liye.</div>
             <div class="code-box"><span class="cmd-text">grep "Password" credentials.txt</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
         </div>
         <div class="cmd-card">
@@ -383,7 +376,6 @@
             <div class="code-box"><span class="cmd-text">uniq sorted_list.txt</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
         </div>
 
-        <!-- SECTION 3 -->
         <h2 class="section-title">>_ 3. Permissions & Ownership (31-40)</h2>
         <div class="cmd-card">
             <div class="cmd-name">31. chmod</div>
@@ -392,12 +384,12 @@
         </div>
         <div class="cmd-card">
             <div class="cmd-name">32. chmod 777</div>
-[6/4/2026 9:00 PM] Ninja Pandat: <div class="cmd-desc">File ko full permissions unlock (Read, Write, Execute) sabhi users ko dene ke liye.</div>
+            <div class="cmd-desc">File ko full permissions unlock (Read, Write, Execute) sabhi users ko dene ke liye.</div>
             <div class="code-box"><span class="cmd-text">chmod 777 public_file.txt</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
         </div>
         <div class="cmd-card">
             <div class="cmd-name">33. chown</div>
-            <div class="cmd-desc">File ka owner (malkana haq change owner) badal kar dusre user ko dene ke liye.</div>
+[6/5/2026 12:18 AM] Ninja Pandat: <div class="cmd-desc">File ka owner (malkana haq change owner) badal kar dusre user ko dene ke liye.</div>
             <div class="code-box"><span class="cmd-text">sudo chown root file.txt</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
         </div>
         <div class="cmd-card">
@@ -436,7 +428,6 @@
             <div class="code-box"><span class="cmd-text">groups</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
         </div>
 
-        <!-- SECTION 4 -->
         <h2 class="section-title">>_ 4. Network, Hacking & Info Gathering (41-60)</h2>
         <div class="cmd-card">
             <div class="cmd-name">41. ifconfig / ip a</div>
@@ -445,12 +436,12 @@
         </div>
         <div class="cmd-card">
             <div class="cmd-name">42. ping</div>
-[6/4/2026 9:00 PM] Ninja Pandat: <div class="cmd-desc">Check karne ke liye ki target server ya website host internet se connect online hai ya nahi network ping testing.</div>
+            <div class="cmd-desc">Check karne ke liye ki target server ya website host internet se connect online hai ya nahi network ping testing.</div>
             <div class="code-box"><span class="cmd-text">ping google.com -c 4</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
         </div>
         <div class="cmd-card">
             <div class="cmd-name">43. curl</div>
-            <div class="cmd-desc">Terminal se internet URL par request data bhejne ya api web data content fetch check karne ke liye.</div>
+[6/5/2026 12:18 AM] Ninja Pandat: <div class="cmd-desc">Terminal se internet URL par request data bhejne ya api web data content fetch check karne ke liye.</div>
             <div class="code-box"><span class="cmd-text">curl https://ifconfig.me</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
         </div>
         <div class="cmd-card">
@@ -492,12 +483,12 @@
             <div class="cmd-name">51. whois</div>
             <div class="cmd-desc">Cyber security domain footprinting info gathering—website owner registration info trace details check karna.</div>
             <div class="code-box"><span class="cmd-text">whois google.com</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
-[6/4/2026 9:00 PM] Ninja Pandat: </div>
+        </div>
         <div class="cmd-card">
             <div class="cmd-name">52. ssh</div>
             <div class="cmd-desc">Secure Shell—Duniya ke kisi bhi dur remote linux server terminal access ko safely login control chalane ke liye.</div>
             <div class="code-box"><span class="cmd-text">ssh root@139.59.1.100</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
-        </div>
+[6/5/2026 12:18 AM] Ninja Pandat: </div>
         <div class="cmd-card">
             <div class="cmd-name">53. scp</div>
             <div class="cmd-desc">Secure Copy Protocol—network par encryption se safe remote vps server par files transfer send receive karna.</div>
@@ -539,17 +530,16 @@
             <div class="code-box"><span class="cmd-text">ftp 192.168.1.20</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
         </div>
 
-        <!-- SECTION 5 -->
         <h2 class="section-title">>_ 5. System Performance & Resource Tracking (61-80)</h2>
         <div class="cmd-card">
             <div class="cmd-name">61. top</div>
             <div class="cmd-desc">Linux ka built-in task manager live system resource RAM usage processor core services activity tracking monitor karna.</div>
-[6/4/2026 9:00 PM] Ninja Pandat: <div class="code-box"><span class="cmd-text">top</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            <div class="code-box"><span class="cmd-text">top</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
         </div>
         <div class="cmd-card">
             <div class="cmd-name">62. htop</div>
             <div class="cmd-desc">Task manager graphics mode terminal color system health check monitor status metrics dashboard tracking tool.</div>
-            <div class="code-box"><span class="cmd-text">htop</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+[6/5/2026 12:18 AM] Ninja Pandat: <div class="code-box"><span class="cmd-text">htop</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
         </div>
         <div class="cmd-card">
             <div class="cmd-name">63. ps</div>
@@ -594,12 +584,12 @@
         <div class="cmd-card">
             <div class="cmd-name">71. du -sh</div>
             <div class="cmd-desc">Disk Usage stats—kisi single folder directory asset file dump metrics exact properties disk space size check check weight.</div>
-[6/4/2026 9:00 PM] Ninja Pandat: <div class="code-box"><span class="cmd-text">du -sh /var/www/html</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            <div class="code-box"><span class="cmd-text">du -sh /var/www/html</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
         </div>
         <div class="cmd-card">
             <div class="cmd-name">72. free -m</div>
             <div class="cmd-desc">System RAM hardware usage layout specifications Megabytes units checking free memory space check memory blocks.</div>
-            <div class="code-box"><span class="cmd-text">free -m</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+[6/5/2026 12:18 AM] Ninja Pandat: <div class="code-box"><span class="cmd-text">free -m</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
         </div>
         <div class="cmd-card">
             <div class="cmd-name">73. free -g</div>
@@ -642,15 +632,14 @@
             <div class="code-box"><span class="cmd-text">sudo dmesg | tail</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
         </div>
 
-        <!-- SECTION 6 -->
         <h2 class="section-title">>_ 6. Package Setup & Advanced Pro Automation (81-100)</h2>
-[6/4/2026 9:00 PM] Ninja Pandat: <div class="cmd-card">
+        <div class="cmd-card">
             <div class="cmd-name">81. apt update</div>
             <div class="cmd-desc">Package Manager server data tracking lists cloud upgrade cache refresh checking refresh setup tool.</div>
             <div class="code-box"><span class="cmd-text">sudo apt update</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
         </div>
         <div class="cmd-card">
-            <div class="cmd-name">82. apt upgrade</div>
+[6/5/2026 12:18 AM] Ninja Pandat: <div class="cmd-name">82. apt upgrade</div>
             <div class="cmd-desc">Installed older apps tools packages system updates downloading dependencies latest modules software update download.</div>
             <div class="code-box"><span class="cmd-text">sudo apt upgrade -y</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
         </div>
@@ -692,12 +681,12 @@
         <div class="cmd-card">
             <div class="cmd-name">90. userdel</div>
             <div class="cmd-desc">User accounts terminal context remove profile data wiping cleanup targets access lists entry delete user.</div>
-[6/4/2026 9:00 PM] Ninja Pandat: <div class="code-box"><span class="cmd-text">sudo userdel developer_ninja</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            <div class="code-box"><span class="cmd-text">sudo userdel developer_ninja</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
         </div>
         <div class="cmd-card">
             <div class="cmd-name">91. history</div>
             <div class="cmd-desc">Terminal pane inputs typed logs database memory execution check commands history list view search tracking data.</div>
-            <div class="code-box"><span class="cmd-text">history</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+[6/5/2026 12:18 AM] Ninja Pandat: <div class="code-box"><span class="cmd-text">history</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
         </div>
         <div class="cmd-card">
             <div class="cmd-name">92. alias</div>
@@ -738,7 +727,7 @@
             <div class="cmd-name">99. shutdown now</div>
             <div class="cmd-desc">Power off server controls parameters immediately hard cloud networks drop machine closure system power close shutdown computer command.</div>
             <div class="code-box"><span class="cmd-text">sudo shutdown now</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
-[6/4/2026 9:00 PM] Ninja Pandat: </div>
+        </div>
         <div class="cmd-card">
             <div class="cmd-name">100. man</div>
             <div class="cmd-desc">The King Help Manual Documentation—kisi bhi system tools ya architecture algorithm variables parameters commands manual guide guidelines book open checking. Help command.</div>
@@ -750,8 +739,7 @@
 <footer>
     <p>&copy; 2026 Ninja - Linux.com | Advanced Terminal Database System</p>
 </footer>
-
-<script>
+[6/5/2026 12:18 AM] Ninja Pandat: <script>
     // STANDARD TEXT SEARCH LOGIC
     function searchCommands() {
         var input = document.getElementById("searchBar").value.toLowerCase();
@@ -764,6 +752,7 @@
             var cmdDesc = cards[i].querySelector(".cmd-desc").innerText.toLowerCase();
             
             if (cmdName.includes(input) || cmdDesc.includes(input)) {
+                cards[i].style.style.display = "block";
                 cards[i].style.display = "block";
                 visibleCardsCount++;
             } else {
@@ -793,7 +782,6 @@
         var micBtn = document.getElementById("micBtn");
         var searchBar = document.getElementById("searchBar");
         
-        // Checking browser compatibility
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             var recognition = new SpeechRecognition();
@@ -814,12 +802,12 @@
             
             recognition.onresult = function(event) {
                 var voiceText = event.results[0][0].transcript.toLowerCase();
-                // Strip ending dot if added by voice engine
                 if(voiceText.endsWith('.')) { voiceText = voiceText.slice(0, -1); }
                 
                 searchBar.value = voiceText;
                 searchBar.placeholder = "Command dhoondhein ya kaam type karein...";
-                searchCommands(); // Trigger smart match search instantly
+                micBtn.classList.remove("listening");
+                searchCommands(); 
             };
             
             recognition.onerror = function() {
@@ -837,18 +825,18 @@
     function triggerPhotoSearch() {
         document.getElementById("imageInput").click();
     }
-[6/4/2026 9:00 PM] Ninja Pandat: function processPhotoSearch(input) {
+
+    function processPhotoSearch(input) {
         if (input.files && input.files[0]) {
             var file = input.files[0];
             var fileName = file.name.toLowerCase();
             var searchBar = document.getElementById("searchBar");
             
-            // Smart OCR Engine Simulation via dynamic filename context analysis
-            // Users screenshot files named 'delete-error.png' or 'ip.jpg' will trigger query matches
-            var query = "delete"; // Default safe fall-through query
+            var query = "delete"; 
             
+            // Fixed the syntax error by replacing raw space with logic code ||
             if (fileName.includes("ip")  fileName.includes("net")  fileName.includes("wifi")) {
-                query = "ip check";
+[6/5/2026 12:18 AM] Ninja Pandat: query = "ip check";
             } else if (fileName.includes("file")  fileName.includes("create")  fileName.includes("touch")) {
                 query = "file";
             } else if (fileName.includes("folder") || fileName.includes("dir")) {
@@ -860,7 +848,7 @@
             }
             
             searchBar.value = query;
-            searchCommands(); // Trigger execution pipeline
+            searchCommands(); 
             alert("📷 Image Processed Successfully! Matched contextual tags: '" + query + "'");
         }
     }
