@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PYTHON_CORE - Scripting Vault</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+         /* ================= THEME CONFIGURATION ================= */
+        :root {
+            --bg-main: #0A0F24;          /* Deep Synth Navy */
+            --bg-terminal: #050816;      /* Darker shadow navy for terminal box */
+            --neon-pink: #F15BB5;        /* Glowing Flamingo Pink */
+            --neon-turquoise: #00F5D4;   /* Electric Turquoise */
+            --text-white: #FFFFFF;
+            --text-muted: #6272A4;       /* Subtle gray-blue for descriptions */
+            --glass-bg: rgba(98, 114, 164, 0.15);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-main);
+            background-image: 
+                linear-gradient(rgba(10, 15, 36, 0.95), rgba(10, 15, 36, 0.95)), 
+                url('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1000&auto=format&fit=crop'); 
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            color: var(--text-white);
+            margin: 0;
+            padding: 0;
+            padding-top: 70px;
+        }
+
+        /* ================= FIXED NAVIGATION BAR ================= */
+        .cyber-navbar {
+            width: 100%;
+            background-color: rgba(5, 8, 22, 0.95);
+            border-bottom: 2px solid var(--neon-pink);
+            box-shadow: 0 2px 15px rgba(241, 91, 181, 0.3);
+            box-sizing: border-box;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .nav-brand {
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.3rem;
+            letter-spacing: 2px;
+            text-shadow: 0 0 8px rgba(0, 245, 212, 0.5);
+        }
+        .nav-brand span {
+            color: var(--neon-pink); /* Brand Accent Change */
+        }
+        .nav-menu {
+            display: flex;
+            gap: 25px;
+        }
+        .nav-link {
+            color: var(--neon-turquoise);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 5px 12px;
+            border-radius: 4px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #000;
+            background-color: var(--neon-pink);
+            box-shadow: 0 0 15px rgba(241, 91, 181, 0.6);
+        }
+
+        header {
+            background-color: rgba(5, 8, 22, 0.9);
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 3px solid var(--neon-turquoise);
+            box-shadow: 0 0 25px rgba(0, 245, 212, 0.15);
+        }
+        header h1 {
+            margin: 0;
+            color: var(--neon-pink); /* Use Pink for Title */
+            font-size: 2.8rem;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(241, 91, 181, 0.6);
+            font-family: 'Courier New', Courier, monospace;
+        }
+        header p {
+            color: var(--text-muted);
+            margin: 8px 0 0 0;
+            font-size: 1.1rem;
+        }
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        /* ================= SEARCH BOX ================= */
+        .search-box-container {
+            margin-bottom: 30px;
+            position: sticky;
+            top: 80px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            background-color: var(--bg-terminal);
+            border: 2px solid var(--neon-turquoise);
+            border-radius: 30px;
+            padding: 5px 15px;
+            box-shadow: 0 4px 20px rgba(0, 245, 212, 0.3);
+        }
+        #searchBar {
+            flex: 1;
+            padding: 12px 10px;
+            font-size: 1.1rem;
+            border: none;
+            background: transparent;
+            color: #fff;
+            outline: none;
+        }
+        .search-btn {
+            background: none;
+            border: none;
+            color: var(--neon-turquoise);
+            font-size: 1.3rem;
+            cursor: pointer;
+            margin-left: 12px;
+            transition: 0.2s;
+            padding: 8px;
+        }
+        .search-btn:hover {
+            color: var(--neon-pink);
+            transform: scale(1.1);
+        }
+        
+        /* Active Listening State */
+        .search-btn.listening {
+            color: var(--neon-pink) !important;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        #imageInput { display: none; }
+        
+        /* ================= INTRO & LISTS ================= */
+        .intro {
+            background: var(--glass-bg);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--neon-pink);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(5px);
+        }
+        .intro h3 { 
+            color: var(--neon-pink); 
+            margin-top: 0; 
+        }
+        .intro p { 
+            color: var(--text-muted); 
+        }
+        
+        h2.section-title {
+            color: var(--neon-turquoise);
+            border-bottom: 2px solid rgba(98, 114, 164, 0.2);
+            padding-bottom: 10px;
+            margin-top: 40px;
+            font-family: 'Courier New', Courier, monospace;
+            text-shadow: 0 0 5px rgba(0, 245, 212, 0.3);
+        }
+        .cmd-card {
+            background-color: rgba(20, 23, 46, 0.9);
+            border: 1px solid rgba(98, 114, 164, 0.2);
+            border-radius: 6px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            transition: all 0.2s;
+        }
+        .cmd-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--neon-turquoise);
+            box-shadow: 0 4px 15px rgba(0, 245, 212, 0.2);
+        }
+        .cmd-name {
+            font-size: 1.2rem;
+            color: var(--neon-pink);
+            font-weight: bold;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .cmd-desc {
+            margin: 8px 0;
+            color: var(--text-muted);
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+        .code-box {
+            background-color: var(--bg-terminal);
+            padding: 12px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            color: var(--neon-turquoise);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            border: 1px solid rgba(98, 114, 164, 0.3);
+        }
+        .copy-btn {
+            background-color: var(--neon-pink);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: sans-serif;
+            font-size: 0.8rem;
+            transition: 0.2s;
+        }
+        .copy-btn:hover {
+            background-color: var(--neon-turquoise);
+            color: var(--bg-main);
+            font-weight: bold;
+        }
+        #noResults {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--neon-pink);
+            margin-top: 30px;
+            display: none;
+            font-weight: bold;
+            background: rgba(241, 91, 181, 0.1);
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid var(--neon-pink);
+        }
+        footer {
+            text-align: center;
+            padding: 25px;
+            background-color: var(--bg-terminal);
+            color: var(--text-muted);
+            margin-top: 50px;
+            border-top: 2px solid rgba(98, 114, 164, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="cyber-navbar">
+        <div class="nav-brand">NINJA_<span>CORE</span></div>
+        <div class="nav-menu">
+            <a href="linux.html" class="nav-link"><i class="fas fa-terminal"></i> Linux Terminal</a>
+            <a href="1.html" class="nav-link active"><i class="fab fa-python"></i> Python Vault</a>
+        </div>
+    </nav>
+
+    <header>
+        <h1>PYTHON ARCHIVE</h1>
+        <p>🐍 100 Core Built-ins, Methods & Automation Syntax 🐍</p>
+    </header>
+
+    <div class="container">
+        
+        <div class="search-box-container">
+            <i class="fa-solid fa-magnifying-glass" style="color: #00ff66; margin-right: 5px;"></i>
+            <input type="text" id="searchBar" onkeyup="searchCommands()" placeholder="Python function dhoondhein (e.g., list append, split, json)...">
+            
+            <button class="search-btn" id="micBtn" onclick="startVoiceSearch()" title="Bol kar search karein">
+                <i class="fa-solid fa-microphone"></i>
+            </button>
+            
+            <button class="search-btn" onclick="triggerPhotoSearch()" title="Photo se match karein">
+                <i class="fa-solid fa-camera"></i>
+            </button>
+            <input type="file" id="imageInput" accept="image/*" onchange="processPhotoSearch(this)">
+        </div>
+
+        <div class="intro">
+            <h3>🚨 Python Scripting Utility Engine Active</h3>
+            <p>Yahan Python language ke 1 se leke 100 tak functions indexed hain. Search karne ke liye keyword likhein ya 🎤 Mic ka use karein.</p>
+        </div>
+
+        <div id="noResults">❌ SCRIPT ERROR: Koi matching code execution block nahi mila!</div>
+
+        <div id="cmdList">
+            
+            <h2 class="section-title">>> 1. Built-in Functions & Core Basics (1-20)</h2>
+            <div class="cmd-card">
+                <div class="cmd-name">1. print()</div>
+                <div class="cmd-desc">Terminal pane ya screen par data, text ya output values display/print karne ke liye.</div>
+                <div class="code-box"><span class="cmd-text">print("Hello Network Ninja")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">2. input()</div>
+                <div class="cmd-desc">Execution ke dauran terminal se dynamic console input user se accept lene ke liye.</div>
+                <div class="code-box"><span class="cmd-text">user_cmd = input("Enter Command: ")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">3. type()</div>
+                <div class="cmd-desc">Kisi bhi variable variable parameters ka object classification data type verify check karne ke liye.</div>
+                <div class="code-box"><span class="cmd-text">type(user_cmd)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">4. len()</div>
+                <div class="cmd-desc">String characters total words ya list collection list arrays ki count length size nikalne ke liye.</div>
+                <div class="code-box"><span class="cmd-text">len("kali_linux")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">5. int()</div>
+                <div class="cmd-desc">Strings character data metrics string values ko dynamic pure mathematical integer values me convert parse karna.</div>
+                <div class="code-box"><span class="cmd-text">port = int("80")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">6. float()</div>
+                <div class="cmd-desc">Kisi value variable context ko point/decimal data floating numbers parameters me parse setup values types transition.</div>
+                <div class="code-box"><span class="cmd-text">pi_val = float("3.14")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">7. str()</div>
+                <div class="cmd-desc">Numbers array datasets list items collections objects ko plain tracking readable string format data transformation.</div>
+                <div class="code-box"><span class="cmd-text">str(443)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">8. bool()</div>
+                <div class="cmd-desc">Variables parameter checking inputs conditional evaluations data True ya False parameters logic outputs framework tracking.</div>
+                <div class="code-box"><span class="cmd-text">bool(1)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">9. list()</div>
+                <div class="cmd-desc">Iterables datasets sets structures elements values sequence elements lists objects matrix index storage transformation arrays.</div>
+                <div class="code-box"><span class="cmd-text">list((1, 2, 3))</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">10. tuple()</div>
+                <div class="cmd-desc">Data collection matrix layout parameters ko unchangeable static read-only tuple items collections block profiles values setup.</div>
+                <div class="code-box"><span class="cmd-text">tuple([5, 10, 15])</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">11. dict()</div>
+                <div class="cmd-desc">Key-value dictionary framework object mapping database directly scripts command parameters layout instantiation variables.</div>
+                <div class="code-box"><span class="cmd-text">dict(name="admin", role="root")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">12. set()</div>
+                <div class="cmd-desc">List array collection duplicate data items components clean remove elements dynamic values sets unique filter collections arrays.</div>
+                <div class="code-box"><span class="cmd-text">set([1, 2, 2, 3, 3])</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">13. range()</div>
+                <div class="cmd-desc">Loops loops tracking metrics auto arrays sequences numerical numbers iterations ranges limits generator setup tracking index.</div>
+                <div class="code-box"><span class="cmd-text">range(0, 10)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">14. id()</div>
+                <div class="cmd-desc">Object variable structural element real ram memory dynamic hex allocation pointer identifier index codes system traces memory checking.</div>
+                <div class="code-box"><span class="cmd-text">id(user_cmd)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">15. help()</div>
+                <div class="cmd-desc">Python native systems manual information modules attributes functionalities guide structural library parameters documentation display open.</div>
+                <div class="code-box"><span class="cmd-text">help(str)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">16. dir()</div>
+                <div class="cmd-desc">Specified library structures target object modules class profiles available internal functions sub methods properties array layouts dump listings map.</div>
+                <div class="code-box"><span class="cmd-text">dir(list)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">17. abs()</div>
+                <div class="cmd-desc">Mathematical calculation absolute equations, values tracking positive conversions negative values markers updates logic profiles computations bounds.</div>
+                <div class="code-box"><span class="cmd-text">abs(-45)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">18. sum()</div>
+                <div class="cmd-desc">Arrays lists datasets elements mathematical auto arithmetic summation total numbers values summary loop automation tools.</div>
+                <div class="code-box"><span class="cmd-text">sum([10, 20, 30])</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">19. min()</div>
+                <div class="cmd-desc">Data array collections elements lower values threshold metrics analysis index minimum search selector targets elements values.</div>
+                <div class="code-box"><span class="cmd-text">min(5, 12, 1, 9)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">20. max()</div>
+                <div class="cmd-desc">Datasets bundles elements loops processing counters top upper value parameters analysis arrays peak detection index selector extraction fields.</div>
+                <div class="code-box"><span class="cmd-text">max(5, 12, 1, 9)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+
+            <h2 class="section-title">>> 2. String Methods Manipulation (21-40)</h2>
+            <div class="cmd-card">
+                <div class="cmd-name">21. .upper()</div>
+                <div class="cmd-desc">String plain text layout all components characters capitalized capital text structure transforms letters conversion casing.</div>
+                <div class="code-box"><span class="cmd-text">"nmap".upper()</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">22. .lower()</div>
+                <div class="cmd-desc">String text configurations structures variables inputs matching parameters matching conversions data formatting small casing processing lowercase values.</div>
+                <div class="code-box"><span class="cmd-text">"KALI".lower()</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">23. .strip()</div>
+                <div class="cmd-desc">Inbound data strings front and back redundant white spaces fields cleanup inputs parsing parameters validations profiles filters wrappers lines strings text formatting.</div>
+                <div class="code-box"><span class="cmd-text">"   root   ".strip()</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">24. .replace()</div>
+                <div class="cmd-desc">String variables parameters keyword tracking matching segments overrides modification target tags adjustments swaps tools mapping arrays strings.</div>
+                <div class="code-box"><span class="cmd-text">"payload.exe".replace(".exe", ".sh")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">25. .split()</div>
+                <div class="cmd-desc">String texts log data buffers line structures parsing lists arrays formats components items separator split cutting logic strings array breakdown.</div>
+                <div class="code-box"><span class="cmd-text">"192.168.1.1".split(".")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">26. .join()</div>
+                <div class="cmd-desc">Array lists array sequence string paths components merge stitch together string concatenation delimiter layout building.</div>
+                <div class="code-box"><span class="cmd-text">".".join(['192', '168', '1', '1'])</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">27. .find()</div>
+                <div class="cmd-desc">String variables patterns searches substring locations numeric index placement traces find tracking tracking match elements.</div>
+                <div class="code-box"><span class="cmd-text">"admin_panel".find("panel")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">28. .count()</div>
+                <div class="cmd-desc">Specific patterns indicators text elements characters strings string buffers analysis repetition counts parameters numbers tracking checks loops.</div>
+                <div class="code-box"><span class="cmd-text">"anonymous".count("n")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">29. .startswith()</div>
+                <div class="cmd-desc">String patterns prefixes checkpoints matching boolean authentications validations validation criteria checking security rules.</div>
+                <div class="code-box"><span class="cmd-text">"https://google.com".startswith("https")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">30. .endswith()</div>
+                <div class="cmd-desc">Format files validations validation logic criteria suffixes path checks processing script tools parameters verify targets patterns rules profiles extensions validation.</div>
+                <div class="code-box"><span class="cmd-text">"script.py".endswith(".py")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">31. .isalpha()</div>
+                <div class="cmd-desc">String character verification criteria numbers white spaces markers empty symbols validation checks only letters criteria check.</div>
+                <div class="code-box"><span class="cmd-text">"NinjaCode".isalpha()</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">32. .isdigit()</div>
+                <div class="cmd-desc">Inputs fields forms filters values confirmation strings contains pure numeric configurations check parameter verification numbers checks fields.</div>
+                <div class="code-box"><span class="cmd-text">"8080".isdigit()</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">33. .isalnum()</div>
+                <div class="cmd-desc">Checks mixing arrays values letters variables digits without system characters symbols formatting safety inputs validations.</div>
+                <div class="code-box"><span class="cmd-text">"Root001".isalnum()</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">34. .title()</div>
+                <div class="cmd-desc">String text words processing arrays capitalization titles setups formatting views structural layouts logs transformations.</div>
+                <div class="code-box"><span class="cmd-text">"cyber security guide".title()</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">35. .capitalize()</div>
+                <div class="cmd-desc">Transforms string lines structures first main letter uppercase sequence rest tracking lowercase parameters automation styling formats.</div>
+                <div class="code-box"><span class="cmd-text">"python scripting".capitalize()</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">36. .format()</div>
+                <div class="cmd-desc">Variables placeholders matching values template structures logs messages injections parameters string formatting templates logic generation.</div>
+                <div class="code-box"><span class="cmd-text">"Target IP: {}".format("127.0.0.1")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">37. f-string (f"")</div>
+                <div class="cmd-desc">Modern direct string text inline interpolation parameters variables embedding dynamic tracking formatting layout profiles output logs scripts shortcut logic.</div>
+                <div class="code-box"><span class="cmd-text">f"Connected to port: {port}"</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">38. .encode()</div>
+                <div class="cmd-desc">String human readable parameters network streams data binary format layouts standard conversion raw bytes configurations tracking.</div>
+                <div class="code-box"><span class="cmd-text">"secret_key".encode('utf-8')</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">39. .decode()</div>
+                <div class="cmd-desc">Inbound binary payloads standard raw stream bytes convert transformation readable clear plain string text lines layouts values extraction parsing tools.</div>
+                <div class="code-box"><span class="cmd-text">bytes_payload.decode('utf-8')</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">40. .zfill()</div>
+                <div class="cmd-desc">String numerical layout padding formats left margin zeros addition constraints dimensions consistency metrics data checks logs dashboard parameters formatting.</div>
+                <div class="code-box"><span class="cmd-text">"5".zfill(3)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+
+            <h2 class="section-title">>> 3. Lists & Arrays Data Management (41-55)</h2>
+            <div class="cmd-card">
+                <div class="cmd-name">41. .append()</div>
+                <div class="cmd-desc">List data container database aakhiri block index endpoint elements dynamic values insertions additions inject items tracking items arrays tracking.</div>
+                <div class="code-box"><span class="cmd-text">ports_list.append(80)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">42. .extend()</div>
+                <div class="cmd-desc">Merge entire tracking lists array metrics elements structures within original sequence container append block combine listings loops arrays tracking updates.</div>
+                <div class="code-box"><span class="cmd-text">list1.extend(list2)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">43. .insert()</div>
+                <div class="cmd-desc">Force items values injections specific array locations positioning pointers index shift data sets configurations updates parameters variables entries.</div>
+                <div class="code-box"><span class="cmd-text">list.insert(0, "first_item")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">44. .remove()</div>
+                <div class="cmd-desc">Delete target data item directly by string value parameter exact name match first instance erase clearing list layout blocks arrays tracking clear tools.</div>
+                <div class="code-box"><span class="cmd-text">users.remove("guest")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">45. .pop()</div>
+                <div class="cmd-desc">Erase clear index locations elements defaults items list end returns values dynamic output retrieval variables logs parameters tracking items arrays.</div>
+                <div class="code-box"><span class="cmd-text">last_user = users.pop()</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">46. .clear()</div>
+                <div class="cmd-desc">Wipes completely database layouts data sequences structures arrays containers reset lists properties initialization values clear empty arrays sets maps.</div>
+                <div class="code-box"><span class="cmd-text">ports_list.clear()</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">47. .index()</div>
+                <div class="cmd-desc">Find location numbers indexes placement values matching arrays records lookups query positioning coordinates tracking identifiers keys value parameters index.</div>
+                <div class="code-box"><span class="cmd-text">users.index("admin")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">48. .sort()</div>
+                <div class="cmd-desc">Modifies structures inline alphabetical numerical formats sorting order tracking sequences elements arrays organization variables tools configurations structure adjustments.</div>
+                <div class="code-box"><span class="cmd-text">nodes.sort()</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">49. .reverse()</div>
+                <div class="cmd-desc">Flip completely items sequence positioning first indexes blocks last backwards ordering array structures conversion inversion tracking lists items tools.</div>
+                <div class="code-box"><span class="cmd-text">payloads.reverse()</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">50. .copy()</div>
+                <div class="cmd-desc">Cloning data structures separation values duplication original variables instances values protection modification safe memory blocks mirroring lists copy items.</div>
+                <div class="code-box"><span class="cmd-text">backup_list = original_list.copy()</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">51. sorted()</div>
+                <div class="cmd-desc">Built-in generator returns completely separate fresh sorted array layout keeping original items structures sequence undisturbed parsing list validation array tools.</div>
+                <div class="code-box"><span class="cmd-text">new_ordered = sorted(raw_list)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">52. zip()</div>
+                <div class="cmd-desc">Parallel processing iterations linking multiple datasets matching row arrays index pairs locking together data collections tuple matrix generator structures maps loops.</div>
+                <div class="code-box"><span class="cmd-text">zip(users_list, passwords_list)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">53. enumerate()</div>
+                <div class="cmd-desc">Loop loops iteration counters tracking alongside list entries indexing data generation automation automated listings layout output tracking indices sequences loop codes.</div>
+                <div class="code-box"><span class="cmd-text">enumerate(target_ips)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">54. filter()</div>
+                <div class="cmd-desc">Dataset conditional validations extract parameters array filtration pipeline criteria match objects logic validation sequences datasets operations tools components filter profiles.</div>
+                <div class="code-box"><span class="cmd-text">filter(None, data_list)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">55. list slicing [:]</div>
+                <div class="cmd-desc">Array sections segmentations tracking markers index cuts extraction sub sequences patterns list slicing configurations blocks layout values pull metrics fields tools parts.</div>
+                <div class="code-box"><span class="cmd-text">top_three = full_list[0:3]</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+
+            <h2 class="section-title">>> 4. Dictionary & Set Key Value Maps (56-70)</h2>
+            <div class="cmd-card">
+                <div class="cmd-name">56. .keys()</div>
+                <div class="cmd-desc">Dictionary structures indexes headers extraction listings profiles lookup validations keys validation check mappings tracking arrays variables configurations arrays.</div>
+                <div class="code-box"><span class="cmd-text">credentials.keys()</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">57. .values()</div>
+                <div class="cmd-desc">Extract payload segments value parameters elements inside map tables database blocks rows dataset variables array data tracking lists components data dump format.</div>
+                <div class="code-box"><span class="cmd-text">credentials.values()</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">58. .items()</div>
+                <div class="cmd-desc">Returns multi variables mapping array loops data reading access loop iterations key value tracking tuple configurations layouts fields operations.</div>
+                <div class="code-box"><span class="cmd-text">credentials.items()</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">59. .get()</div>
+                <div class="cmd-desc">Safe data reading extraction within dictionary maps fallback defaults handling error exceptions crash protection systems checks keys validations parameters properties.</div>
+                <div class="code-box"><span class="cmd-text">status = db.get("active", False)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">60. .update()</div>
+                <div class="cmd-desc">Appends merges dictionary items records overrides key value markers database sync changes configurations modifiers tracking tables inputs arrays structure.</div>
+                <div class="code-box"><span class="cmd-text">config.update({"timeout": 30})</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">61. .pop() (Dict)</div>
+                <div class="cmd-desc">Dictionary entry deletion key extraction cleanup logs configuration changes value retrieval validation drops operations tables blocks metrics.</div>
+                <div class="code-box"><span class="cmd-text">config.pop("session_id")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">62. .popitem()</div>
+                <div class="cmd-desc">Erase completely tracking dictionary endpoint latest added element key-value sequence structure layout tracking updates tools cleanup drops.</div>
+                <div class="code-box"><span class="cmd-text">last_entry = config.popitem()</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">63. .setdefault()</div>
+                <div class="cmd-desc">Lookup key check if missing inside dictionary assign initialize default value parameters automatically safeguarding structure keys validation.</div>
+                <div class="code-box"><span class="cmd-text">config.setdefault("retry", 5)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">64. .add() (Set)</div>
+                <div class="cmd-desc">Unique elements additions sets containers data validation bypass criteria values check block insert operations arrays updates trackers tracking tracking item markers.</div>
+                <div class="code-box"><span class="cmd-text">ips_set.add("10.0.0.1")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">65. .remove() (Set)</div>
+                <div class="cmd-desc">Set tracking collections values erasure criteria item specification missing items throws active error exception validations drops tools arrays tracking clean fields.</div>
+                <div class="code-box"><span class="cmd-text">ips_set.remove("10.0.0.1")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">66. .discard()</div>
+                <div class="cmd-desc">Safe element erasure sets storage structure, missing parameters won't raise crash exceptions handling safeguards automation checks drops options files clean tools datasets.</div>
+                <div class="code-box"><span class="cmd-text">ips_set.discard("192.168.1.100")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">67. .union()</div>
+                <div class="cmd-desc">Combines two sets datasets arrays unique extraction data elements compilation updates layout operations lists combinations matrix framework analytics trackers elements values.</div>
+                <div class="code-box"><span class="cmd-text">all_ips = set1.union(set2)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">68. .intersection()</div>
+                <div class="cmd-desc">Extract duplicate tracking variables matching common common records across collections matrices sets verification criteria data mining analytics data loops mappings indicators.</div>
+                <div class="code-box"><span class="cmd-text">common_elements = set1.intersection(set2)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">69. .difference()</div>
+                <div class="cmd-desc">Subtract set elements filters profiles comparisons extraction mismatch data elements tracking analytics trackers array validation variables subtraction layout filters modules.</div>
+                <div class="code-box"><span class="cmd-text">unique_in_set1 = set1.difference(set2)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">70. .symmetric_difference()</div>
+                <div class="cmd-desc">Filters out common tracking data intersections keeps completely non-matching unique elements components parameters comparisons logs matrices metrics matrix operations tools data.</div>
+                <div class="code-box"><span class="cmd-text">non_common = set1.symmetric_difference(set2)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+
+            <h2 class="section-title">>> 5. File Handling & OS Automation (71-85)</h2>
+            <div class="cmd-card">
+                <div class="cmd-name">71. open()</div>
+                <div class="cmd-desc">File systems bridge linkages access paths opening parameters read write binary text log modes connection trigger blocks handling codes pathways fields pipelines.</div>
+                <div class="code-box"><span class="cmd-text">log_file = open("server.log", "r")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">72. .read()</div>
+                <div class="cmd-desc">File buffers full string data dump reading memory loading raw payload tracking extraction layouts analytics reader text data strings blocks tools metrics text fields data.</div>
+                <div class="code-box"><span class="cmd-text">full_data = log_file.read()</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">73. .readline()</div>
+                <div class="cmd-desc">Line by line scanning data loading rows sequences processing buffer checks loop step constraints reading memory conservation tools line trace pipeline entries.</div>
+                <div class="code-box"><span class="cmd-text">single_line = log_file.readline()</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">74. .readlines()</div>
+                <div class="cmd-desc">Parses layout dataset lines convert formatting array element list structures tracking indexing sequences configurations blocks lines reading layout files storage formats.</div>
+                <div class="code-box"><span class="cmd-text">all_lines_list = log_file.readlines()</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">75. .write()</div>
+                <div class="cmd-desc">Inbound string tracking text configurations injections storage write data modification saves parameters logging outputs strings records variables integration setups tools data.</div>
+                <div class="code-box"><span class="cmd-text">log_file.write("INFO: Action triggered\n")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">76. .writelines()</div>
+                <div class="cmd-desc">Batch text writing lists items array string records iteration structures directly database systems files override save updates logs generation tracking arrays profiles tools data.</div>
+                <div class="code-box"><span class="cmd-text">log_file.writelines(lines_list)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">77. .close()</div>
+                <div class="cmd-desc">Closes active hardware handles resources cleanup streams system safety disconnect protection pipelines terminal locking file system releases storage tracks code instances.</div>
+                <div class="code-box"><span class="cmd-text">log_file.close()</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">78. with open() as f:</div>
+                <div class="cmd-desc">Modern context manager safe block execution auto resource closing error resistance safeguards script parameters files stream connection automation layout architectures.</div>
+                <div class="code-box"><span class="cmd-text">with open("report.txt", "w") as f:</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">79. os.getcwd()</div>
+                <div class="cmd-desc">Operating System Current Working Directory path locations trace framework script placement directory configuration checking console environments coordinates lookups values path.</div>
+                <div class="code-box"><span class="cmd-text">import os; current_dir = os.getcwd()</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">80. os.listdir()</div>
+                <div class="cmd-desc">Folder tracking arrays scanning systems data layout paths overview items view elements lists directory content trace automation tools scan variables.</div>
+                <div class="code-box"><span class="cmd-text">files_list = os.listdir(".")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">81. os.mkdir()</div>
+                <div class="cmd-desc">Python code trigger execution system architecture layout folders directories creations automation paths templates fields setups building infrastructure profiles.</div>
+                <div class="code-box"><span class="cmd-text">os.mkdir("recon_data")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">82. os.remove()</div>
+                <div class="cmd-desc">File asset tracking purge deletion system script bypass cleanups uninstallation hard clearing items storage targets configuration drops logs clear trace wipe files.</div>
+                <div class="code-box"><span class="cmd-text">os.remove("temp_cache.log")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">83. os.path.exists()</div>
+                <div class="cmd-desc">Verification logic checkpoint paths validations files availability structures verify boolean indicators safeguards configuration checks mapping arrays trackers validation flags.</div>
+                <div class="code-box"><span class="cmd-text">file_found = os.path.exists("config.json")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">84. sys.argv</div>
+                <div class="cmd-desc">Command line parameter arrays extraction terminal script arguments indexing coordinates dynamic parsing flags validation options tracking lists layout variables inputs data.</div>
+                <div class="code-box"><span class="cmd-text">import sys; target_ip = sys.argv[1]</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">85. sys.exit()</div>
+                <div class="cmd-desc">Force system shutdown console termination exit instances application runtime breaks safe bypass closing execution automation flow control variables flags parameters tools.</div>
+                <div class="code-box"><span class="cmd-text">sys.exit("System Malfunction: Stopping")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+
+            <h2 class="section-title">>> 6. Advanced Frameworks, JSON & Math (86-100)</h2>
+            <div class="cmd-card">
+                <div class="cmd-name">86. map()</div>
+                <div class="cmd-desc">Functional iterator maps calculations algorithms actions transformations loop cycles lists items scaling datasets sequences automation layout tools.</div>
+                <div class="code-box"><span class="cmd-text">int_items = list(map(int, ['1', '2', '3']))</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">87. filter() (Advanced)</div>
+                <div class="cmd-desc">Advanced pipeline validation filtering datasets dynamic conditions sequences rules matching criteria lists extraction sorting variables functional programming tools metrics.</div>
+                <div class="code-box"><span class="cmd-text">active_ports = list(filter(lambda x: x > 0, ports))</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">88. lambda</div>
+                <div class="cmd-desc">Anonymous compact inline functions creation variable triggers equations fast operational conditions code structure shortcuts architecture blueprints parameters calculations.</div>
+                <div class="code-box"><span class="cmd-text">square = lambda x: x * x</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">89. try ... except</div>
+                <div class="cmd-desc">Error catch exception handling crash parameters monitoring bypass fail logs debugging runtime protections execution flows logic configurations safeguards.</div>
+                <div class="code-box"><span class="cmd-text">try:\n    res = 10 / 0\nexcept Exception as e:\n    print(e)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">90. raise</div>
+                <div class="cmd-desc">Manual runtime syntax exception errors injection custom parameter rule alert notifications verification failures flag validations alerts logs triggers models logic.</div>
+                <div class="code-box"><span class="cmd-text">raise ValueError("Access Denied: Non-Root")</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">91. import</div>
+                <div class="cmd-desc">External ecosystems standard internal libraries tools components scripts dynamic features modular architecture loading injection tracking connections integrations setups.</div>
+                <div class="code-box"><span class="cmd-text">import json, math, sys, os, random</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">92. json.dumps()</div>
+                <div class="cmd-desc">Converts python objects map dictionaries layout configurations strings format datasets network transmissions web browsers data standard storage serialization formats data dump.</div>
+                <div class="code-box"><span class="cmd-text">json_string = json.dumps({"status": "OK"})</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">93. json.loads()</div>
+                <div class="cmd-desc">Parses inbound string files payloads network browser raw json structures variables dictionaries data structural extraction types conversion object reconstruction translation.</div>
+                <div class="code-box"><span class="cmd-text">dict_data = json.loads(json_string)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">94. datetime.now()</div>
+                <div class="cmd-desc">Live logging timeline trace timestamp generation hours calendar calendar setups intervals tracking diagnostic logs server ticks clocks profiles time management.</div>
+                <div class="code-box"><span class="cmd-text">from datetime import datetime; print(datetime.now())</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">95. time.sleep()</div>
+                <div class="cmd-desc">Delays script operations pauses execution loop cycles pacing intervals automation freezes timers duration countdown monitoring setups throttling tools profiles triggers.</div>
+                <div class="code-box"><span class="cmd-text">import time; time.sleep(2.5)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">96. random.randint()</div>
+                <div class="cmd-desc">Random numbers variables calculations scopes boundaries generation parameters gaming cheats randomized dynamic parameters automated logic generator integer calculations fields values.</div>
+                <div class="code-box"><span class="cmd-text">import random; secure_pin = random.randint(1000, 9999)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">97. random.choice()</div>
+                <div class="cmd-desc">List array index components datasets automated single random items picker selector profiles logic variants extraction data checks options lists selectors parameters variables.</div>
+                <div class="code-box"><span class="cmd-text">selected_target = random.choice(['IP1', 'IP2', 'IP3'])</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">98. math.sqrt()</div>
+                <div class="cmd-desc">Square root calculation engineering formula equations algorithm processing modules root math values analytics tracking operations calculation solvers fields variables.</div>
+                <div class="code-box"><span class="cmd-text">import math; root_val = math.sqrt(64)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">99. math.ceil()</div>
+                <div class="cmd-desc">Decimal digits parameters round off upcoming highest upper block threshold limit integer value formatting constraints boundary measurements metrics calculations variables scales.</div>
+                <div class="code-box"><span class="cmd-text">upper_bound = math.ceil(4.15)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">100. math.floor()</div>
+                <div class="cmd-desc">Floating values round off downward closest minimum integer baseline scaling boundary down calculations formatting constraints threshold optimizations operations numerical data.</div>
+                <div class="code-box"><span class="cmd-text">lower_bound = math.floor(4.85)</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 LINUX.COM | Python Scripting Repository Core Panel</p>
+    </footer>
+
+    <script>
+        // STANDARD TEXT SEARCH ENGINE (REALTIME FILTRATION)
+        function searchCommands() {
+            var input = document.getElementById("searchBar").value.toLowerCase();
+            var cards = document.getElementsByClassName("cmd-card");
+            var headings = document.getElementsByClassName("section-title");
+            var visibleCardsCount = 0;
+
+            for (var i = 0; i < cards.length; i++) {
+                var cmdName = cards[i].querySelector(".cmd-name").innerText.toLowerCase();
+                var cmdDesc = cards[i].querySelector(".cmd-desc").innerText.toLowerCase();
+                
+                if (cmdName.includes(input) || cmdDesc.includes(input)) {
+                    cards[i].style.display = "block";
+                    visibleCardsCount++;
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+
+            for (var j = 0; j < headings.length; j++) {
+                if (input.length > 0) {
+                    headings[j].style.display = "none";
+                } else {
+                    headings[j].style.display = "block";
+                }
+            }
+
+            var noResults = document.getElementById("noResults");
+            if (visibleCardsCount === 0 && input.length > 0) {
+                noResults.style.display = "block";
+            } else {
+                noResults.style.display = "none";
+            }
+        }
+
+        // ONE-CLICK TEXT BOX COPY SYSTEM
+        function copyCmd(button) {
+            var cmdText = button.parentElement.querySelector('.cmd-text').innerText;
+            // Cleans up string literal formatting if any exists inside code-box text representation
+            cmdText = cmdText.replace(/\\n/g, '\n');
+            navigator.clipboard.writeText(cmdText);
+            
+            button.innerText = "Copied!";
+            button.style.backgroundColor = "#00ff66";
+            button.style.color = "#000";
+            button.style.fontWeight = "bold";
+            
+            setTimeout(function(){
+                button.innerText = "Copy";
+                button.style.backgroundColor = "#ff4a5a";
+                button.style.color = "#fff";
+                button.style.fontWeight = "normal";
+            }, 1500);
+        }
+
+        // AUDIO SPEECH SEARCH LOGIC (HINDI/HINGLISH COMPATIBLE)
+        function startVoiceSearch() {
+            var micBtn = document.getElementById("micBtn");
+            var searchBar = document.getElementById("searchBar");
+            
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                var recognition = new SpeechRecognition();
+                
+                recognition.lang = 'hi-IN'; 
+                recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
+                
+                recognition.onstart = function() {
+                    micBtn.classList.add("listening");
+                    searchBar.placeholder = "Listening active... Kuch bolein...";
+                };
+                
+                recognition.onspeechend = function() {
+                    recognition.stop();
+                    micBtn.classList.remove("listening");
+                };
+                
+                recognition.onresult = function(event) {
+                    var voiceText = event.results[0][0].transcript.toLowerCase();
+                    if(voiceText.endsWith('.')) { voiceText = voiceText.slice(0, -1); }
+                    
+                    searchBar.value = voiceText;
+                    searchBar.placeholder = "Python function dhoondhein...";
+                    searchCommands();
+                };
+                
+                recognition.onerror = function() {
+                    micBtn.classList.remove("listening");
+                    searchBar.placeholder = "Voice failed. Type manually.";
+                };
+                
+                recognition.start();
+            } else {
+                alert("Oops! Aapka browser Speech Recognition support nahi karta. Chrome use karein.");
+            }
+        }
+
+        // SCREENSHOT CONTEXT SEARCH LOGIC (MOCK OCR TAG PARSER)
+        function triggerPhotoSearch() {
+            document.getElementById("imageInput").click();
+        }
+
+        function processPhotoSearch(input) {
+            if (input.files && input.files[0]) {
+                var file = input.files[0];
+                var fileName = file.name.toLowerCase();
+                var searchBar = document.getElementById("searchBar");
+                
+                var query = "print"; // Default layout fallback
+                
+                if (fileName.includes("json") || fileName.includes("dump") || fileName.includes("load")) {
+                    query = "json";
+                } else if (fileName.includes("list") || fileName.includes("append") || fileName.includes("pop")) {
+                    query = "list";
+                } else if (fileName.includes("string") || fileName.includes("split") || fileName.includes("strip")) {
+                    query = "string";
+                } else if (fileName.includes("file") || fileName.includes("open") || fileName.includes("write")) {
+                    query = "file";
+                } else if (fileName.includes("math") || fileName.includes("sqrt") || fileName.includes("floor")) {
+                    query = "math";
+                }
+                
+                searchBar.value = query;
+                searchCommands(); 
+                alert("📷 Code Image Processed! Matched contextual tags: '" + query + "'");
+            }
+        }
+    </script>
+</body>
+</html>

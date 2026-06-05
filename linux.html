@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LINUX.COM - Terminal Vault</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+            :root {
+            --bg-main: #0A0F24;          /* Deep Synth Navy (Body) */
+            --bg-terminal: #050816;      /* Darker Navy (Cards/Container) */
+            --neon-pink: #F15BB5;        /* Glowing Flamingo Pink (Accent 1) */
+            --neon-turquoise: #00F5D4; /* Electric Turquoise (Accent 2) */
+            --text-white: #FFFFFF;
+            --text-muted: #6272A4;      /* Muted Gray-Blue */
+            
+            /* Derived Shadows for Glow Effects */
+            --glow-pink: rgba(241, 91, 181, 0.4);
+            --glow-turquoise: rgba(0, 245, 212, 0.4);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-main);
+            /* Cyber Background (Subtle Grid Pattern) */
+            background-image: 
+                linear-gradient(rgba(10, 15, 36, 0.92), rgba(10, 15, 36, 0.92)), 
+                url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000&auto=format&fit=crop');
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            color: var(--text-white);
+            margin: 0;
+            padding: 0;
+            padding-top: 70px;
+        }
+
+        /* ================= FIXED NAVIGATION BAR ================= */
+        .cyber-navbar {
+            width: 100%;
+            background-color: rgba(5, 8, 22, 0.95);
+            border-bottom: 2px solid var(--neon-turquoise);
+            box-shadow: 0 2px 15px var(--glow-turquoise);
+            box-sizing: border-box;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .nav-brand {
+            color: var(--text-white);
+            font-weight: bold;
+            font-size: 1.3rem;
+            letter-spacing: 2px;
+            text-shadow: 0 0 8px var(--glow-turquoise);
+        }
+        .nav-brand span {
+            color: var(--neon-pink);
+        }
+        .nav-menu {
+            display: flex;
+            gap: 25px;
+        }
+        .nav-link {
+            color: var(--neon-turquoise);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 5px 12px;
+            border-radius: 4px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: var(--bg-main);
+            background-color: var(--neon-turquoise);
+            box-shadow: 0 0 10px var(--glow-turquoise);
+        }
+
+        /* ================= HEADER SECTION ================= */
+        header {
+            background-color: rgba(5, 5, 10, 0.9);
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 3px solid var(--neon-pink);
+            box-shadow: 0 0 20px var(--glow-pink);
+        }
+        header h1 {
+            margin: 0;
+            color: var(--neon-turquoise);
+            font-size: 2.8rem;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px var(--glow-turquoise);
+            font-family: 'Courier New', Courier, monospace;
+        }
+        header p {
+            color: var(--text-muted);
+            margin: 8px 0 0 0;
+            font-size: 1.1rem;
+        }
+        
+        /* ================= MAIN CONTAINER ================= */
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* ================= SEARCH BOX ================= */
+        .search-box-container {
+            margin-bottom: 30px;
+            position: sticky;
+            top: 80px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            background-color: var(--bg-terminal);
+            border: 2px solid var(--neon-pink);
+            border-radius: 30px;
+            padding: 5px 15px;
+            box-shadow: 0 4px 20px var(--glow-pink);
+        }
+        #searchBar {
+            flex: 1;
+            padding: 12px 10px;
+            font-size: 1.1rem;
+            border: none;
+            background: transparent;
+            color: var(--text-white);
+            outline: none;
+        }
+        .search-btn {
+            background: none;
+            border: none;
+            color: var(--neon-pink);
+            font-size: 1.3rem;
+            cursor: pointer;
+            margin-left: 12px;
+            transition: 0.2s;
+            padding: 8px;
+        }
+        .search-btn:hover {
+            color: var(--neon-turquoise);
+            transform: scale(1.1);
+        }
+        
+        /* Voice active mode */
+        .search-btn.listening {
+            color: var(--neon-turquoise) !important;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        #imageInput { display: none; }
+
+        /* ================= INTRO & SECTION TITLES ================= */
+        .intro {
+            background: rgba(20, 20, 35, 0.85);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--neon-pink);
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .intro h3 {
+            color: var(--neon-pink);
+            margin-top: 0;
+        }
+        .intro p {
+            color: var(--text-muted);
+        }
+        h2.section-title {
+            color: var(--neon-pink);
+            border-bottom: 2px solid #1e2136;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            font-family: 'Courier New', Courier, monospace;
+            text-shadow: 0 0 5px var(--glow-pink);
+        }
+
+        /* ================= COMMAND CARDS ================= */
+        .cmd-card {
+            background-color: var(--bg-terminal);
+            border: 1px solid #1e2136;
+            border-radius: 6px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            transition: all 0.2s;
+        }
+        .cmd-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--neon-turquoise);
+            box-shadow: 0 4px 15px var(--glow-turquoise);
+        }
+        .cmd-name {
+            font-size: 1.2rem;
+            color: var(--neon-turquoise);
+            font-weight: bold;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .cmd-desc {
+            margin: 8px 0;
+            color: #aab2e0; /* Lightened muted blue for readability */
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+        .code-box {
+            background-color: #02030d; /* Even darker for command block */
+            padding: 12px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            color: var(--neon-turquoise);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            border: 1px solid #111530;
+        }
+        .copy-btn {
+            background-color: var(--neon-pink);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: sans-serif;
+            font-size: 0.8rem;
+            transition: 0.2s;
+        }
+        .copy-btn:hover {
+            background-color: var(--neon-turquoise);
+            color: #000;
+            font-weight: bold;
+        }
+
+        /* ================= FOOTER & MESSAGES ================= */
+        #noResults {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--neon-pink);
+            margin-top: 30px;
+            display: none;
+            font-weight: bold;
+            background: rgba(20,10,20,0.5);
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid var(--neon-pink);
+        }
+        footer {
+            text-align: center;
+            padding: 25px;
+            background-color: #02030d;
+            color: var(--text-muted);
+            margin-top: 50px;
+            border-top: 2px solid #1e2136;
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 600px) {
+            .cyber-navbar { padding: 15px 20px; }
+            .nav-menu { gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================= FIXED NAVIGATION BAR ================= -->
+    <nav class="cyber-navbar">
+        <div class="nav-brand">NINJA_<span>CORE</span></div>
+        <div class="nav-menu">
+            <a href="1.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
+            <a href="python.html" class="nav-link"><i class="fab fa-python"></i> Python</a>
+        </div>
+    </nav>
+
+    <header>
+        <h1>LINUX.COM</h1>
+        <p>⚡ Terminal Command Center - System Fully Operational ⚡</p>
+    </header>
+
+    <div class="container">
+        
+        <div class="search-box-container">
+            <i class="fa-solid fa-magnifying-glass" style="color: #00ff66; margin-right: 5px;"></i>
+            <input type="text" id="searchBar" onkeyup="searchCommands()" placeholder="Command dhoondhein ya kaam type karein (e.g., delete, ip check)...">
+            
+            <button class="search-btn" id="micBtn" onclick="startVoiceSearch()" title="Bol kar search karein">
+                <i class="fa-solid fa-microphone"></i>
+            </button>
+            
+            <button class="search-btn" onclick="triggerPhotoSearch()" title="Photo upload karke search karein">
+                <i class="fa-solid fa-camera"></i>
+            </button>
+            <input type="file" id="imageInput" accept="image/*" onchange="processPhotoSearch(this)">
+        </div>
+
+        <div class="intro">
+            <h3>🚨 Hacker Advanced Search Utilities Active</h3>
+            <p>Aap bol kar search karne ke liye <b>Mic 🎤</b> dabayein ya fir error/command ki photo match karne ke liye <b>Camera 📷</b> utility select karein.</p>
+        </div>
+
+        <div id="noResults">❌ TERMINAL ERROR: Koi matching command nahi mili! Dobara try karein.</div>
+
+        <div id="cmdList">
+            <!-- SECTION 1 -->
+            <h2 class="section-title">>_ 1. File & Directory Navigation (1-15)</h2>
+            <div class="cmd-card">
+                <div class="cmd-name">1. pwd</div>
+                <div class="cmd-desc">Current folder (directory) ka poora path dikhati hai. Location check karne ke liye.</div>
+                <div class="code-box"><span class="cmd-text">pwd</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">2. ls</div>
+                <div class="cmd-desc">Folder ke andar maujood sabhi files aur folders ki list dekhne ke liye (view list).</div>
+                <div class="code-box"><span class="cmd-text">ls -la</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">3. cd</div>
+                <div class="cmd-desc">Ek directory/folder se dusre folder me jaane ke liye (change directory, folder change).</div>
+                <div class="code-box"><span class="cmd-text">cd /home/user/Downloads</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">4. cd ..</div>
+                <div class="cmd-desc">Ek folder peeche (parent directory me) jaane ke liye, back hone ke liye.</div>
+                <div class="code-box"><span class="cmd-text">cd ..</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">5. cd ~</div>
+                <div class="cmd-desc">Direct user ke Home folder directory me wapas aane ke liye.</div>
+                <div class="code-box"><span class="cmd-text">cd ~</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">6. mkdir</div>
+                <div class="cmd-desc">Naya khali folder (directory) banane ke liye. New folder bnane k liye command.</div>
+                <div class="code-box"><span class="cmd-text">mkdir My_Project</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">7. mkdir -p</div>
+                <div class="cmd-desc">Folder ke andar multiple sub-folder ek sath banane ke liye (nested directory).</div>
+                <div class="code-box"><span class="cmd-text">mkdir -p folder1/folder2/folder3</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">8. rmdir</div>
+                <div class="cmd-desc">Kisi khali empty folder ko delete karne ya hatane ke liye.</div>
+                <div class="code-box"><span class="cmd-text">rmdir old_folder</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">9. touch</div>
+                <div class="cmd-desc">Nayi khali file (text file, python file, html) generate ya create karne ke liye. New file bnane k liye cmd.</div>
+                <div class="code-box"><span class="cmd-text">touch index.html</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">10. cp</div>
+                <div class="cmd-desc">Kisi file ko ek jagah se dusri jagah copy karne ke liye.</div>
+                <div class="code-box"><span class="cmd-text">cp file.txt /backup/</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">11. cp -r</div>
+                <div class="cmd-desc">Poore folder directory ko data samet copy karne ke liye.</div>
+                <div class="code-box"><span class="cmd-text">cp -r myfolder/ /backup_folder/</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">12. mv</div>
+                <div class="cmd-desc">File/folder ko move karne ya rename (naam badalne, name change) ke liye.</div>
+                <div class="code-box"><span class="cmd-text">mv old.txt new_name.txt</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">13. rm</div>
+                <div class="cmd-desc">Kisi file ko hamesha ke liye delete karne ya hatane ke liye (remove file).</div>
+                <div class="code-box"><span class="cmd-text">rm temporary.txt</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">14. rm -rf</div>
+                <div class="cmd-desc">Zabardasti (Forcefully) kisi folder aur poore data ko ek baar me delete hatane ke liye.</div>
+                <div class="code-box"><span class="cmd-text">rm -rf targeted_folder</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">15. clear</div>
+                <div class="cmd-desc">Terminal ki screen ko bilkul saaf clean karne ke liye saaf karne ki command.</div>
+                <div class="code-box"><span class="cmd-text">clear</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+
+            <!-- SECTION 2 -->
+            <h2 class="section-title">>_ 2. File Viewing & Text Editing (16-30)</h2>
+            <div class="cmd-card">
+                <div class="cmd-name">16. cat</div>
+                <div class="cmd-desc">File ke andar kya likha hai, use screen par dekhne ya open padhne ke liye. File read command.</div>
+                <div class="code-box"><span class="cmd-text">cat server.log</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">17. nano</div>
+                <div class="cmd-desc">Terminal ke andar ek simple text editor kholne aur file edit likhne ke liye.</div>
+                <div class="code-box"><span class="cmd-text">nano config.php</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">18. vi / vim</div>
+                <div class="cmd-desc">Advanced developers ka text editor file create aur modify karne ke liye.</div>
+                <div class="code-box"><span class="cmd-text">vim script.sh</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">19. head</div>
+                <div class="cmd-desc">Kisi badi file ki starting ki sirf pehli 10 lines content dekhne ke liye.</div>
+                <div class="code-box"><span class="cmd-text">head main_data.csv</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">20. tail</div>
+                <div class="cmd-desc">Kisi file ki sabse aakhiri ki niche ki 10 lines log check karne ke liye.</div>
+                <div class="code-box"><span class="cmd-text">tail -n 20 error.log</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">21. tail -f</div>
+                <div class="cmd-desc">Live logs checking—jaise-jaise file me text badlega live update screen par dikhega.</div>
+                <div class="code-box"><span class="cmd-text">tail -f access.log</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">22. less</div>
+                <div class="cmd-desc">Badi text files ko page-by-page aaram se read scroll karke padhne ke liye.</div>
+                <div class="code-box"><span class="cmd-text">less huge_database.sql</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">23. grep</div>
+                <div class="cmd-desc">Kisi file ke andar se koi khaas shabd (text/keyword find) search dhoondhne ke liye.</div>
+                <div class="code-box"><span class="cmd-text">grep "Password" credentials.txt</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">24. grep -i</div>
+                <div class="cmd-desc">Case-insensitive search bina capital small letter ka dhyan rakhe word find karna.</div>
+                <div class="code-box"><span class="cmd-text">grep -i "error" system.log</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">25. find</div>
+                <div class="cmd-desc">Poore system me file ke naam (file name search) se dhoondhne khojne ke liye.</div>
+                <div class="code-box"><span class="cmd-text">find . -name "config.json"</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">26. wc</div>
+                <div class="cmd-desc">File me kitni lines, words (shabd) aur characters hain count ginne ke liye (word count).</div>
+                <div class="code-box"><span class="cmd-text">wc -l essay.txt</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">27. diff</div>
+                <div class="cmd-desc">Do files ke beech me kya antar difference hai compare karke check karna.</div>
+                <div class="code-box"><span class="cmd-text">diff file1.txt file2.txt</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">28. echo</div>
+                <div class="cmd-desc">Terminal par text print karne ya kisi file me naya text text insert write likhne ke liye.</div>
+                <div class="code-box"><span class="cmd-text">echo "Hello Ninja" >> log.txt</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">29. sort</div>
+                <div class="cmd-desc">File ke andar likhi list ko alphabetically (A to Z) line sequence me arrange sort karna.</div>
+                <div class="code-box"><span class="cmd-text">sort names.txt</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">30. uniq</div>
+                <div class="cmd-desc">List me se duplicate extra lines ko hata kar sirf unique content dikhane ke liye.</div>
+                <div class="code-box"><span class="cmd-text">uniq sorted_list.txt</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+
+            <!-- SECTION 3 -->
+            <h2 class="section-title">>_ 3. Permissions & Ownership (31-40)</h2>
+            <div class="cmd-card">
+                <div class="cmd-name">31. chmod</div>
+                <div class="cmd-desc">Kisi file ki read, write aur execute system permissions badalne change karne ke liye.</div>
+                <div class="code-box"><span class="cmd-text">chmod +x script.sh</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">32. chmod 777</div>
+                <div class="cmd-desc">File ko full permissions unlock (Read, Write, Execute) sabhi users ko dene ke liye.</div>
+                <div class="code-box"><span class="cmd-text">chmod 777 public_file.txt</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">33. chown</div>
+                <div class="cmd-desc">File ka owner (malkana haq change owner) badal kar dusre user ko dene ke liye.</div>
+                <div class="code-box"><span class="cmd-text">sudo chown root file.txt</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">34. chgrp</div>
+                <div class="cmd-desc">File ya folder ka group ownership system configuration badalne ke liye.</div>
+                <div class="code-box"><span class="cmd-text">sudo chgrp developers document.pdf</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">35. sudo</div>
+                <div class="cmd-desc">Kisi bhi command ko administrator power (root superuser privileges) ke sath chalane run karne ke liye.</div>
+                <div class="code-box"><span class="cmd-text">sudo apt update</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">36. sudo su</div>
+                <div class="cmd-desc">Directly root user login (Superuser mode admin terminal) me switch karne ke liye.</div>
+                <div class="code-box"><span class="cmd-text">sudo su</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">37. passwd</div>
+                <div class="cmd-desc">Logged-in user account ka login password badalne change karne ke liye.</div>
+                <div class="code-box"><span class="cmd-text">passwd</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">38. whoami</div>
+                <div class="cmd-desc">Yeh check karne ke liye ki aap abhi kis user account identity se terminal chala rahe hain name check.</div>
+                <div class="code-box"><span class="cmd-text">whoami</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">39. id</div>
+                <div class="cmd-desc">Current user ki numerical user ID (UID) aur group ID (GID) details check karna.</div>
+                <div class="code-box"><span class="cmd-text">id</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">40. groups</div>
+                <div class="cmd-desc">Aapka user account kin-kin system groups ka member user list hai check karna.</div>
+                <div class="code-box"><span class="cmd-text">groups</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+
+            <!-- SECTION 4 -->
+            <h2 class="section-title">>_ 4. Network, Hacking & Info Gathering (41-64)</h2>
+            <div class="cmd-card">
+                <div class="cmd-name">41. ifconfig / ip a</div>
+                <div class="cmd-desc">Apne system ka IP Address, Mac Address aur network net details configuration check karna. IP check kaise kare.</div>
+                <div class="code-box"><span class="cmd-text">ip a</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">42. ping</div>
+                <div class="cmd-desc">Check karne ke liye ki target server ya website host internet se connect online hai ya nahi network ping testing.</div>
+                <div class="code-box"><span class="cmd-text">ping google.com -c 4</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">43. curl</div>
+                <div class="cmd-desc">Terminal se internet URL par request data bhejne ya api web data content fetch check karne ke liye.</div>
+                <div class="code-box"><span class="cmd-text">curl https://ifconfig.me</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">44. wget</div>
+                <div class="cmd-desc">Internet URL link se koi bhi tool, softwareso setups, file download karne ki command terminal se.</div>
+                <div class="code-box"><span class="cmd-text">wget https://example.com/tool.zip</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">45. netstat</div>
+                <div class="cmd-desc">Computer ke saare running network connections aur active open ports details trace tracking check karna.</div>
+                <div class="code-box"><span class="cmd-text">netstat -tunlp</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">46. ss</div>
+                <div class="cmd-desc">Netstat ka fast alternative tool connection dump sockets monitoring check status.</div>
+                <div class="code-box"><span class="cmd-text">ss -t -a</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">47. nmap</div>
+                <div class="cmd-desc">Hacking tool network security scanner—server ke open ports scan karne aur vulnerability vulnerabilities dhoondhne ke liye.</div>
+                <div class="code-box"><span class="cmd-text">nmap 192.168.1.1</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">48. nslookup</div>
+                <div class="cmd-desc">Kisi bhi domain url target website ka real IP address server trace pata lagane ke liye dns lookup.</div>
+                <div class="code-box"><span class="cmd-text">nslookup targetsite.com</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">49. dig</div>
+                <div class="cmd-desc">Domain Information Groper—website ke advanced DNS server entry logs records checking analyze karna.</div>
+                <div class="code-box"><span class="cmd-text">dig facebook.com MX</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">50. traceroute</div>
+                <div class="cmd-desc">Network hop data packets ip routes router nodes server tak kaise ja rahe hain tracking trace mapping setup.</div>
+                <div class="code-box"><span class="cmd-text">traceroute netflix.com</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">51. whois</div>
+                <div class="cmd-desc">Cyber security domain footprinting info gathering—website owner registration info trace details check karna.</div>
+                <div class="code-box"><span class="cmd-text">whois google.com</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">52. ssh</div>
+                <div class="cmd-desc">Secure Shell—Duniya ke kisi bhi dur remote linux server terminal access ko safely login control chalane ke liye.</div>
+                <div class="code-box"><span class="cmd-text">ssh root@139.59.1.100</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">53. scp</div>
+                <div class="cmd-desc">Secure Copy Protocol—network par encryption se safe remote vps server par files transfer send receive karna.</div>
+                <div class="code-box"><span class="cmd-text">scp backup.tar.gz user@ip:/remote/dir</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">54. rsync</div>
+                <div class="cmd-desc">Do cloud hosting files remote target destinations folders directories sync fast update migrate automation.</div>
+                <div class="code-box"><span class="cmd-text">rsync -avz localfolder/ user@ip:/remote/</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">55. hostname</div>
+                <div class="cmd-desc">Aapke local system computer machine vps node server ka computer name identity text view check karna.</div>
+                <div class="code-box"><span class="cmd-text">hostname</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">56. hostname -I</div>
+                <div class="cmd-desc">Direct bina extra data short local IP address status extract print out numeric interface code.</div>
+                <div class="code-box"><span class="cmd-text">hostname -I</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">57. route</div>
+                <div class="cmd-desc">IP kernel network gateway parameters table parameters information monitoring setup.</div>
+                <div class="code-box"><span class="cmd-text">route -n</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">58. iwconfig</div>
+                <div class="cmd-desc">Wireless Wi-Fi adapters tracking settings monitor mode injection wifi hacking adapter setup controls.</div>
+                <div class="code-box"><span class="cmd-text">iwconfig</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">59. host</div>
+                <div class="cmd-desc">Simple domain name lookup command mapping website names direct behind server IPs.</div>
+                <div class="code-box"><span class="cmd-text">host target.com</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">60. ftp</div>
+                <div class="cmd-desc">File Transfer Protocol—hosting storage target folder connections login panel dashboard files upload manage.</div>
+                <div class="code-box"><span class="cmd-text">ftp 192.168.1.20</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">61. top</div>
+                <div class="cmd-desc">Linux ka built-in task manager live system resource RAM usage processor core services activity tracking monitor karna.</div>
+                <div class="code-box"><span class="cmd-text">top</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">62. htop</div>
+                <div class="cmd-desc">Task manager graphics mode terminal color system health check monitor status metrics dashboard tracking tool.</div>
+                <div class="code-box"><span class="cmd-text">htop</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">63. ps</div>
+                <div class="cmd-desc">Process Status—is time current terminal machine user context backgrounds tasks screenshot dump view list.</div>
+                <div class="code-box"><span class="cmd-text">ps aux</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">64. kill</div>
+                <div class="cmd-desc">Process ID (PID) code se kisi freeze block hanging apps terminal program ko instantly force close stop stop target karna.</div>
+                <div class="code-box"><span class="cmd-text">sudo kill 2451</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+
+            <!-- SECTION 5 -->
+            <h2 class="section-title">>_ 5. System Performance & Resource Tracking (65-80)</h2>
+            <div class="cmd-card">
+                <div class="cmd-name">65. killall</div>
+                <div class="cmd-desc">Bina numerical PID code software process application exact name query se processes end kill terminate stop karna.</div>
+                <div class="code-box"><span class="cmd-text">sudo killall chrome</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">66. pkill</div>
+                <div class="cmd-desc">Process filters patterns search match targets backgrounds process kill application end stop command.</div>
+                <div class="code-box"><span class="cmd-text">pkill -f python</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">67. bg</div>
+                <div class="cmd-desc">Stopped terminal executions variables parameters processes ko background layer pipeline hidden resume trigger chalana.</div>
+                <div class="code-box"><span class="cmd-text">bg</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">68. fg</div>
+                <div class="cmd-desc">Background processing threads outputs tasks console logs frontend interface window frame pop pull return up status.</div>
+                <div class="code-box"><span class="cmd-text">fg</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">69. jobs</div>
+                <div class="cmd-desc">Current active console active tasks instances queues index tracking lists layout overview view.</div>
+                <div class="code-box"><span class="cmd-text">jobs</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">70. df -h</div>
+                <div class="cmd-desc">Disk Free storage checking—Hard disk partition space kitna khali full bhra hai GB metrics read check drive size.</div>
+                <div class="code-box"><span class="cmd-text">df -h</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">71. du -sh</div>
+                <div class="cmd-desc">Disk Usage stats—kisi single folder directory asset file dump metrics exact properties disk space size check check weight.</div>
+                <div class="code-box"><span class="cmd-text">du -sh /var/www/html</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">72. free -m</div>
+                <div class="cmd-desc">System RAM hardware usage layout specifications Megabytes units checking free memory space check memory blocks.</div>
+                <div class="code-box"><span class="cmd-text">free -m</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">73. free -g</div>
+                <div class="cmd-desc">System memory parameters statistics display modules directly Gigabytes blocks readable context view.</div>
+                <div class="code-box"><span class="cmd-text">free -g</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">74. uptime</div>
+                <div class="cmd-desc">Server hosting system reboot machine continuous chalne running hours duration history diagnostic timeline trace checking.</div>
+                <div class="code-box"><span class="cmd-text">uptime</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">75. uname -a</div>
+                <div class="cmd-desc">Linux distro info kernel details build architecture parameters operating system details status view extraction.</div>
+                <div class="code-box"><span class="cmd-text">uname -a</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">76. lscpu</div>
+                <div class="cmd-desc">Processor core configurations frequency architecture specifications models CPU stats breakdown sheet profile.</div>
+                <div class="code-box"><span class="cmd-text">lscpu</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">77. lshw</div>
+                <div class="cmd-desc">List Hardware—motherboard system firmware modules bus specs parameters components structural diagnostics reports summary logs.</div>
+                <div class="code-box"><span class="cmd-text">sudo lshw -short</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">78. lsblk</div>
+                <div class="cmd-desc">Block devices hardware configurations mapping storage points lists nodes pendrive hard disk drives connected layouts map.</div>
+                <div class="code-box"><span class="cmd-text">lsblk</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">79. lsof</div>
+                <div class="cmd-desc">List Open Files traces—system files active hooks daemons open lock stream pipelines checking process paths tracker.</div>
+                <div class="code-box"><span class="cmd-text">lsof</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">80. dmesg</div>
+                <div class="cmd-desc">Kernel hardware level triggers drivers events usb device connects failures logging debug logs panel prints.</div>
+                <div class="code-box"><span class="cmd-text">sudo dmesg | tail</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+
+            <!-- SECTION 6 -->
+            <h2 class="section-title">>_ 6. Package Setup & Advanced Pro Automation (81-100)</h2>
+            <div class="cmd-card">
+                <div class="cmd-name">81. apt update</div>
+                <div class="cmd-desc">Package Manager server data tracking lists cloud upgrade cache refresh checking refresh setup tool.</div>
+                <div class="code-box"><span class="cmd-text">sudo apt update</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">82. apt upgrade</div>
+                <div class="cmd-desc">Installed older apps tools packages system updates downloading dependencies latest modules software update download.</div>
+                <div class="code-box"><span class="cmd-text">sudo apt upgrade -y</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">83. apt install</div>
+                <div class="cmd-desc">Naya software tool, package (git, python, curl, nmap, etc.) auto source download installation setup command install software.</div>
+                <div class="code-box"><span class="cmd-text">sudo apt install git -y</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">84. apt remove</div>
+                <div class="cmd-desc">Faltu apps softwareso programs packages code tracking fields uninstallation tool clean remove system logs.</div>
+                <div class="code-box"><span class="cmd-text">sudo apt remove nmap</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">85. apt purge</div>
+                <div class="cmd-desc">Deep full cleaner application package—app database config files caching structures delete clear wipe karma.</div>
+                <div class="code-box"><span class="cmd-text">sudo apt purge apache2</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">86. tar -cvf</div>
+                <div class="cmd-desc">Multiple directories assets codes clusters file streams compress tar file bundle backup zip create banana.</div>
+                <div class="code-box"><span class="cmd-text">tar -cvf backup.tar /var/www</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">87. tar -xvf</div>
+                <div class="cmd-desc">Compressed .tar backup packages source software zip tar configurations open unzip extract nodes tool.</div>
+                <div class="code-box"><span class="cmd-text">tar -xvf portfolio.tar.gz</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">88. zip / unzip</div>
+                <div class="cmd-desc">Standard Windows format zip files unpack files archive unzip extract codes processing utility tool.</div>
+                <div class="code-box"><span class="cmd-text">unzip pack.zip</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">89. useradd</div>
+                <div class="cmd-desc">Linux os profiles environment user database parameters control security create naya user add account profile.</div>
+                <div class="code-box"><span class="cmd-text">sudo useradd developer_ninja</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">90. userdel</div>
+                <div class="cmd-desc">User accounts terminal context remove profile data wiping cleanup targets access lists entry delete user.</div>
+                <div class="code-box"><span class="cmd-text">sudo userdel developer_ninja</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">91. history</div>
+                <div class="cmd-desc">Terminal pane inputs typed logs database memory execution check commands history list view search tracking data.</div>
+                <div class="code-box"><span class="cmd-text">history</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">92. alias</div>
+                <div class="cmd-desc">Lambi critical syntax custom scripting commands functions shortcuts links variable replacement nick name mapping keys.</div>
+                <div class="code-box"><span class="cmd-text">alias hack='nmap -v -sV'</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">93. crontab -e</div>
+                <div class="cmd-desc">Task scheduling cron server—backup files scripts routine processing timing automated loops tasks schedule setting triggers.</div>
+                <div class="code-box"><span class="cmd-text">crontab -e</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">94. systemctl start</div>
+                <div class="cmd-desc">Background server tools processing services (webserver, data engines, nginx, apache, mysql) start active boots start engine service start.</div>
+                <div class="code-box"><span class="cmd-text">sudo systemctl start apache2</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">95. systemctl status</div>
+                <div class="cmd-desc">Server daemon scripts background software tracking system running status logs diagnostic verify metrics info checks service check status.</div>
+                <div class="code-box"><span class="cmd-text">sudo systemctl status ssh</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">96. ln -s</div>
+                <div class="cmd-desc">Symbolic link shortcuts creation folder maps pointer paths file linkage desktop short variables pointers.</div>
+                <div class="code-box"><span class="cmd-text">ln -s /var/log/nginx/ live_logs</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">97. watch</div>
+                <div class="cmd-desc">Continuous live output reporting frame logs screens tracking refresh command execution refresh loops auto data.</div>
+                <div class="code-box"><span class="cmd-text">watch -n 1 nvidia-smi</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">98. reboot</div>
+                <div class="cmd-desc">Terminal code power management machine hosting instantly safely hard restart system system restart computer command.</div>
+                <div class="code-box"><span class="cmd-text">sudo reboot</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">99. shutdown now</div>
+                <div class="cmd-desc">Power off server controls parameters immediately hard cloud networks drop machine closure system power close shutdown computer command.</div>
+                <div class="code-box"><span class="cmd-text">sudo shutdown now</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-name">100. man</div>
+                <div class="cmd-desc">The King Help Manual Documentation—kisi bhi system tools ya architecture algorithm variables parameters commands manual guide guidelines book open checking. Help command.</div>
+                <div class="code-box"><span class="cmd-text">man iptables</span><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 LINUX.COM | Terminal Command Center Panel</p>
+    </footer>
+
+    <!-- ================= JAVASCRIPT INTEGRATED ENGINE ================= -->
+    <script>
+        // STANDARD TEXT SEARCH ENGINE (REALTIME FILTRATION)
+        function searchCommands() {
+            var input = document.getElementById("searchBar").value.toLowerCase();
+            var cards = document.getElementsByClassName("cmd-card");
+            var headings = document.getElementsByClassName("section-title");
+            var visibleCardsCount = 0;
+
+            for (var i = 0; i < cards.length; i++) {
+                var cmdName = cards[i].querySelector(".cmd-name").innerText.toLowerCase();
+                var cmdDesc = cards[i].querySelector(".cmd-desc").innerText.toLowerCase();
+                
+                if (cmdName.includes(input) || cmdDesc.includes(input)) {
+                    cards[i].style.display = "block";
+                    visibleCardsCount++;
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+
+            // Section header visibility handling
+            for (var j = 0; j < headings.length; j++) {
+                if (input.length > 0) {
+                    headings[j].style.display = "none";
+                } else {
+                    headings[j].style.display = "block";
+                }
+            }
+
+            // Displays noResults banner if zero matches found
+            var noResults = document.getElementById("noResults");
+            if (visibleCardsCount === 0 && input.length > 0) {
+                noResults.style.display = "block";
+            } else {
+                noResults.style.display = "none";
+            }
+        }
+
+        // ONE-CLICK TEXT BOX COPY SYSTEM
+        function copyCmd(button) {
+            var cmdText = button.parentElement.querySelector('.cmd-text').innerText;
+            navigator.clipboard.writeText(cmdText);
+            
+            button.innerText = "Copied!";
+            button.style.backgroundColor = "#00ff66";
+            button.style.color = "#000";
+            button.style.fontWeight = "bold";
+            
+            setTimeout(function(){
+                button.innerText = "Copy";
+                button.style.backgroundColor = "#ff4a5a";
+                button.style.color = "#fff";
+                button.style.fontWeight = "normal";
+            }, 1500);
+        }
+
+        // FEATURE 1: AUDIO SPEECH SEARCH LOGIC (HINDI/HINGLISH COMPATIBLE)
+        function startVoiceSearch() {
+            var micBtn = document.getElementById("micBtn");
+            var searchBar = document.getElementById("searchBar");
+            
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                var recognition = new SpeechRecognition();
+                
+                recognition.lang = 'hi-IN'; 
+                recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
+                
+                recognition.onstart = function() {
+                    micBtn.classList.add("listening");
+                    searchBar.placeholder = "Listening active... Kuch bolein...";
+                };
+                
+                recognition.onspeechend = function() {
+                    recognition.stop();
+                    micBtn.classList.remove("listening");
+                };
+                
+                recognition.onresult = function(event) {
+                    var voiceText = event.results[0][0].transcript.toLowerCase();
+                    if(voiceText.endsWith('.')) { voiceText = voiceText.slice(0, -1); }
+                    
+                    searchBar.value = voiceText;
+                    searchBar.placeholder = "Command dhoondhein ya kaam type karein...";
+                    searchCommands(); // Runs live filter
+                };
+                
+                recognition.onerror = function() {
+                    micBtn.classList.remove("listening");
+                    searchBar.placeholder = "Voice failed. Type manually.";
+                };
+                
+                recognition.start();
+            } else {
+                alert("Oops! Aapka browser Speech Recognition support nahi karta. Chrome up-to-date use karein.");
+            }
+        }
+
+        // FEATURE 2: SCREENSHOT CONTEXT SEARCH LOGIC (MOCK OCR PARSER)
+        function triggerPhotoSearch() {
+            document.getElementById("imageInput").click();
+        }
+
+        function processPhotoSearch(input) {
+            if (input.files && input.files[0]) {
+                var file = input.files[0];
+                var fileName = file.name.toLowerCase();
+                var searchBar = document.getElementById("searchBar");
+                
+                var query = "delete"; // Default fallback
+                
+                if (fileName.includes("ip") || fileName.includes("net") || fileName.includes("wifi")) {
+                    query = "ip check";
+                } else if (fileName.includes("file") || fileName.includes("create") || fileName.includes("touch")) {
+                    query = "file";
+                } else if (fileName.includes("folder") || fileName.includes("dir")) {
+                    query = "folder";
+                } else if (fileName.includes("remove") || fileName.includes("del") || fileName.includes("rm")) {
+                    query = "delete";
+                } else if (fileName.includes("password") || fileName.includes("root") || fileName.includes("permission")) {
+                    query = "permission";
+                }
+                
+                searchBar.value = query;
+                searchCommands(); 
+                alert("📷 Image Processed Successfully! Matched contextual tags: '" + query + "'");
+            }
+        }
+    </script>
+</body>
+</html>
